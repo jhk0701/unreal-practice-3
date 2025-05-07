@@ -19,14 +19,21 @@ class TPS_PROJECT_API ATPSPlayerController : public APlayerController
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputMappingContext> InputMap;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputAction> MoveAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputAction> LookAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputAction> FireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	TObjectPtr<UInputAction> QuickSlotAction;
 
 protected:
 	virtual void BeginPlay() override;

@@ -5,6 +5,14 @@
 #include "GameFramework/Character.h"
 #include "TPSPlayer.generated.h"
 
+UENUM(BlueprintType)
+enum class EGunType : uint8
+{
+	None	UMETA(DisplayName = "None"),
+	Rifle	UMETA(DisplayName = "Rifle Type"),
+	Sniper	UMETA(DisplayName = "Sniper Type"),
+};
+
 struct FInputActionValue;
 
 UCLASS()
@@ -25,6 +33,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class UCameraComponent> cameraComp;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GunType)
+	EGunType curGunType {EGunType::None};
+
 	// 일반 총
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GunMesh)
 	TObjectPtr<class USkeletalMeshComponent> gunMeshComp;
@@ -56,4 +67,7 @@ protected:
 
 	UFUNCTION()
 	void InputFire(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void InputQuickSlot(const FInputActionValue& Value);
 };

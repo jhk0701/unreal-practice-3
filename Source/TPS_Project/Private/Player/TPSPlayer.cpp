@@ -86,6 +86,7 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	EnhancedInputComp->BindAction(PlayerController->MoveAction, ETriggerEvent::Completed, this, &ATPSPlayer::InputStopMove);
 	EnhancedInputComp->BindAction(PlayerController->JumpAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputJump);
 	EnhancedInputComp->BindAction(PlayerController->FireAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputFire);
+	EnhancedInputComp->BindAction(PlayerController->QuickSlotAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputQuickSlot);
 }
 
 void ATPSPlayer::InputLook(const FInputActionValue& Value)
@@ -117,4 +118,10 @@ void ATPSPlayer::InputFire(const FInputActionValue& Value)
 {
 	FTransform firePoint = gunMeshComp->GetSocketTransform(TEXT("FirePoint"));
 	GetWorld()->SpawnActor<ABullet>(bulletFactory, firePoint);
+}
+
+void ATPSPlayer::InputQuickSlot(const FInputActionValue& Value)
+{
+	float input = Value.Get<float>();
+	curGunType = (EGunType)input;
 }
