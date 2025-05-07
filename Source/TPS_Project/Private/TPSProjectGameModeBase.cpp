@@ -1,8 +1,10 @@
 #include "TPSProjectGameModeBase.h"
 #include "TPS_Project.h"
+#include "Player/TPSPlayer.h"
+#include "TPSPlayerController.h"
 
 ATPSProjectGameModeBase::ATPSProjectGameModeBase()
 {
-	PRINT_CALLINFO();
-	PRINT_LOG(TEXT("Test Log : %s"), TEXT("Test TPS Project Log"));
+	DefaultPawnClass = ATPSPlayer::StaticClass();
+	PlayerControllerClass = ATPSPlayerController::StaticClass();
 }
