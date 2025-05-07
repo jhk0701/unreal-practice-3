@@ -41,6 +41,13 @@ void ABullet::BeginPlay()
 	
 	FTimerHandle deathTimer;
 	GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &ABullet::Die, initialLifeSpan, false);
+	// 람다형태 구현
+	/*
+	GetWorld()->GetTimerManager().SetTimer(deathTimer, FTimerDelegate::CreateLambda([this]() 
+		{
+			Destroy();
+		}), initialLifeSpan, false);
+	*/
 }
 
 void ABullet::Die()
