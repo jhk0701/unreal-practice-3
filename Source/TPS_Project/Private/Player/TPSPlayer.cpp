@@ -31,6 +31,16 @@ ATPSPlayer::ATPSPlayer()
 		gunMeshComp->SetRelativeLocation(FVector(-14, 52, 120));
 	}
 	
+	snipeMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SnipeMesh"));
+	snipeMeshComp->SetupAttachment(GetMesh());
+	ConstructorHelpers::FObjectFinder<UStaticMesh> loadedSnipeMesh(TEXT("StaticMesh'/Game/99-Assets/SniperGun/sniper11.sniper11'"));
+	if(loadedSnipeMesh.Succeeded())
+	{
+		snipeMeshComp->SetStaticMesh(loadedSnipeMesh.Object);
+		snipeMeshComp->SetRelativeLocation(FVector(-22, 55, 150));
+		snipeMeshComp->SetRelativeScale3D(FVector(0.15f));
+	}
+
 	// 3인칭 카메라
 	springArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraHolder"));
 	springArmComp->SetupAttachment(GetRootComponent());

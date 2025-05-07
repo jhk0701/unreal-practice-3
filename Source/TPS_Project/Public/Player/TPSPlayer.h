@@ -25,9 +25,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class UCameraComponent> cameraComp;
 	
-	// 총
+	// 일반 총
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GunMesh)
 	TObjectPtr<class USkeletalMeshComponent> gunMeshComp;
+
+	// 저격 총
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GunMesh)
+	TObjectPtr<UStaticMeshComponent> snipeMeshComp;
 
 	// 총알
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = BulletFactory)
