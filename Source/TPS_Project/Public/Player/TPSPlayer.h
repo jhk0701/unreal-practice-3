@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,12 +13,15 @@ class TPS_PROJECT_API ATPSPlayer : public ACharacter
 public:
 	ATPSPlayer();
 
-
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	// Called when the game starts or when spawned
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	TObjectPtr<class USpringArmComponent> SpringArmComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	TObjectPtr<class UCameraComponent> CameraComp;
+
 	virtual void BeginPlay() override;
 
 };
