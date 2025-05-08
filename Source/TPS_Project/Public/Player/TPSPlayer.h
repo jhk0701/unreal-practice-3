@@ -72,4 +72,8 @@ protected:
 	void InputQuickSlot(const FInputActionValue& Value);
 
 	void SetGunType(EGunType InType);
+
+	UFUNCTION()
+	void InputStartAim(const FInputActionValue& Value);
+	void InputStopAim(const FInputActionValue& Value);
 };

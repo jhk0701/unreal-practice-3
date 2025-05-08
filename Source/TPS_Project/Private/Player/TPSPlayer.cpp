@@ -89,6 +89,8 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	EnhancedInputComp->BindAction(PlayerController->JumpAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputJump);
 	EnhancedInputComp->BindAction(PlayerController->FireAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputFire);
 	EnhancedInputComp->BindAction(PlayerController->QuickSlotAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputQuickSlot);
+	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Started, this, &ATPSPlayer::InputStartAim);
+	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Completed, this, &ATPSPlayer::InputStopAim);
 }
 
 void ATPSPlayer::InputLook(const FInputActionValue& Value)
@@ -134,3 +136,13 @@ void ATPSPlayer::SetGunType(EGunType InType)
 	gunMeshComp->SetVisibility(curGunType == EGunType::Rifle);
 	snipeMeshComp->SetVisibility(curGunType == EGunType::Sniper);
 }
+
+
+void ATPSPlayer::InputStartAim(const FInputActionValue& Value)
+{
+}
+
+void ATPSPlayer::InputStopAim(const FInputActionValue& Value)
+{
+}
+
