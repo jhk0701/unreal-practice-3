@@ -140,10 +140,18 @@ void ATPSPlayer::InputFire(const FInputActionValue& Value)
 		if(bHit)
 		{
 			FTransform hitPoint;
-			hitPoint.SetLocation(hitInfo.ImpactPoint);
-			hitPoint.SetRotation(hitInfo.ImpactNormal.ToOrientationQuat());
+			hitPoint.SetLocation(hitInfo.ImpactPoint);	// 충돌 지점
+			hitPoint.SetRotation(hitInfo.ImpactNormal.ToOrientationQuat()); // 충돌면
+
 			// 총알 효과
 			UGameplayStatics::SpawnEmitterAtLocation(world, bulletEffectFactory, hitPoint);
+
+			UPrimitiveComponent* hitComp = hitInfo.GetComponent(); // 충돌한 컴포넌트
+			if (hitComp && hitComp->IsSimulatingPhysics())
+			{
+				FVector force = -hitInfo.ImpactNormal * hitComp->GetMass() * 500000;
+				hitComp->AddForce(force);
+			}
 		}
 	}
 }
