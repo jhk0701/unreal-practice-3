@@ -70,4 +70,6 @@ protected:
 
 	UFUNCTION()
 	void InputQuickSlot(const FInputActionValue& Value);
+
+	void SetGunType(EGunType InType);
 };

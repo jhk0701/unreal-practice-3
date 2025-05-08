@@ -63,6 +63,8 @@ ATPSPlayer::ATPSPlayer()
 void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetGunType(EGunType::Rifle);
 }
 
 // Called every frame
@@ -123,5 +125,12 @@ void ATPSPlayer::InputFire(const FInputActionValue& Value)
 void ATPSPlayer::InputQuickSlot(const FInputActionValue& Value)
 {
 	float input = Value.Get<float>();
-	curGunType = (EGunType)input;
+	SetGunType((EGunType)input);
+}
+
+void ATPSPlayer::SetGunType(EGunType InType)
+{
+	curGunType = InType;
+	gunMeshComp->SetVisibility(curGunType == EGunType::Rifle);
+	snipeMeshComp->SetVisibility(curGunType == EGunType::Sniper);
 }
