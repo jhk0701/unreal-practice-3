@@ -5,6 +5,8 @@
 #include "GameFramework/Character.h"
 #include "TPSPlayer.generated.h"
 
+struct FInputActionValue;
+
 UENUM(BlueprintType)
 enum class EGunType : uint8
 {
@@ -13,30 +15,23 @@ enum class EGunType : uint8
 	Sniper	UMETA(DisplayName = "Sniper Type"),
 };
 
-struct FInputActionValue;
 
 UCLASS()
 class TPS_PROJECT_API ATPSPlayer : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
-	ATPSPlayer();
-
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 protected:
 	TObjectPtr<class ATPSPlayerController> tpsController;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class USpringArmComponent> springArmComp;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class UCameraComponent> cameraComp;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Type")
-	EGunType curGunType {EGunType::None};
+	EGunType curGunType{ EGunType::None };
 
 	// 일반 총
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Mesh")
@@ -60,6 +55,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input)
 	FVector Direction;
 
+public:
+	ATPSPlayer();
+
+	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()

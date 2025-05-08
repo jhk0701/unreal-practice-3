@@ -1,4 +1,5 @@
 #include "Enemy/Enemy.h"
+#include "Enemy/EnemyFSM.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -9,8 +10,10 @@ AEnemy::AEnemy()
 	if (loadedBodyMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(loadedBodyMesh.Object);
-		GetMesh()->SetRelativeLocationAndRotation(FVector(0,0,-88), FRotator(0,-90, 0));
+		GetMesh()->SetRelativeLocationAndRotation(FVector(0,0,-88), FRotator(0,-90,0));
 	}
+
+	fsm = CreateDefaultSubobject<UEnemyFSM>(TEXT("EnemyFSM"));
 }
 
 void AEnemy::BeginPlay()
@@ -24,10 +27,3 @@ void AEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-

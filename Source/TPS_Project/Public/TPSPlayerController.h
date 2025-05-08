@@ -50,6 +50,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI|Crosshair")
 	TObjectPtr<UUserWidget> CrosshairUI;
 
+public:
 	TObjectPtr<UUserWidget> GetSniperUI();
 	void ShowSniperUI();
 	void HideSniperUI();
