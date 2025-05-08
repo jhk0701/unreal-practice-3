@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ATPSPlayer::ATPSPlayer()
@@ -90,7 +91,7 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	EnhancedInputComp->BindAction(PlayerController->FireAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputFire);
 	EnhancedInputComp->BindAction(PlayerController->QuickSlotAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputQuickSlot);
 	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Started, this, &ATPSPlayer::InputStartAim);
-	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Completed, this, &ATPSPlayer::InputStopAim);
+	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Canceled, this, &ATPSPlayer::InputStopAim);
 }
 
 void ATPSPlayer::InputLook(const FInputActionValue& Value)
@@ -120,8 +121,31 @@ void ATPSPlayer::InputJump(const FInputActionValue& Value)
 
 void ATPSPlayer::InputFire(const FInputActionValue& Value)
 {
-	FTransform firePoint = gunMeshComp->GetSocketTransform(TEXT("FirePoint"));
-	GetWorld()->SpawnActor<ABullet>(bulletFactory, firePoint);
+	if(curGunType == EGunType::Rifle)
+	{
+		FTransform firePoint = gunMeshComp->GetSocketTransform(TEXT("FirePoint"));
+		GetWorld()->SpawnActor<ABullet>(bulletFactory, firePoint);
+	}
+	else
+	{
+		FVector start = cameraComp->GetComponentLocation();
+		FVector end = start + cameraComp->GetForwardVector() * 5000;
+		FHitResult hitInfo;
+		FCollisionQueryParams params;
+		params.AddIgnoredActor(this);
+
+		UWorld* world = GetWorld();
+
+		bool bHit = world->LineTraceSingleByChannel(hitInfo, start, end, ECC_Visibility, params);
+		if(bHit)
+		{
+			FTransform hitPoint;
+			hitPoint.SetLocation(hitInfo.ImpactPoint);
+			hitPoint.SetRotation(hitInfo.ImpactNormal.ToOrientationQuat());
+			// 총알 효과
+			UGameplayStatics::SpawnEmitterAtLocation(world, bulletEffectFactory, hitPoint);
+		}
+	}
 }
 
 void ATPSPlayer::InputQuickSlot(const FInputActionValue& Value)

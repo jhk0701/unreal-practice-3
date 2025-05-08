@@ -33,26 +33,30 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class UCameraComponent> cameraComp;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GunType)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Type")
 	EGunType curGunType {EGunType::None};
 
 	// 일반 총
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GunMesh)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Mesh")
 	TObjectPtr<class USkeletalMeshComponent> gunMeshComp;
 
 	// 저격 총
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GunMesh)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Mesh")
 	TObjectPtr<UStaticMeshComponent> snipeMeshComp;
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Aim")
+	bool bIsAiming;
+
 	// 총알
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = BulletFactory)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gun|Bullet|BulletFactory")
 	TSubclassOf<class ABullet> bulletFactory;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gun|Bullet|Effect")
+	TObjectPtr<class UParticleSystem> bulletEffectFactory;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input)
 	FVector Direction;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Aim)
-	bool bIsAiming;
 
 	virtual void BeginPlay() override;
 
