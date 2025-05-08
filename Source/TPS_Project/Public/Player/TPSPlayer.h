@@ -27,6 +27,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
+	TObjectPtr<class ATPSPlayerController> tpsController;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class USpringArmComponent> springArmComp;
 	
@@ -85,4 +87,6 @@ protected:
 
 	UFUNCTION()
 	void InputStopAim(const FInputActionValue& Value);
+
+
 };

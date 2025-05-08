@@ -32,3 +32,21 @@ void ATPSPlayerController::HideSniperUI()
 {
 	GetSniperUI()->RemoveFromParent();
 }
+
+TObjectPtr<UUserWidget> ATPSPlayerController::GetCrosshairUI()
+{
+	if (!CrosshairUI)
+		CrosshairUI = CreateWidget(this, CrosshairUIFactory);
+
+	return CrosshairUI;
+}
+
+void ATPSPlayerController::ShowCrosshairUI()
+{
+	GetCrosshairUI()->AddToViewport();
+}
+
+void ATPSPlayerController::HideCrosshairUI()
+{
+	GetCrosshairUI()->RemoveFromParent();
+}

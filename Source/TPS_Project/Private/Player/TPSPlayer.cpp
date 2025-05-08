@@ -65,6 +65,9 @@ void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	tpsController = Cast<ATPSPlayerController>(GetController());
+	tpsController->ShowCrosshairUI();
+
 	SetGunType(EGunType::Rifle);
 }
 
@@ -176,14 +179,20 @@ void ATPSPlayer::InputStartAim(const FInputActionValue& Value)
 		return;
 
 	bIsAiming = true;
-	Cast<ATPSPlayerController>(GetController())->ShowSniperUI();
+
+	tpsController->ShowSniperUI();
+	tpsController->HideCrosshairUI();
+
 	cameraComp->SetFieldOfView(45.0f);
 }
 
 void ATPSPlayer::InputStopAim(const FInputActionValue& Value)
 {
 	bIsAiming = false;
-	Cast<ATPSPlayerController>(GetController())->HideSniperUI();
+
+	tpsController->HideSniperUI();
+	tpsController->ShowCrosshairUI();
+
 	cameraComp->SetFieldOfView(90.0f);
 }
 

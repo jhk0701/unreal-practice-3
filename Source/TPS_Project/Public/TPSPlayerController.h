@@ -38,15 +38,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputAction> AimAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI|Sniper")
 	TSubclassOf<class UUserWidget> SniperUIFactory;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI|Sniper")
 	TObjectPtr<UUserWidget> SniperUI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI|Crosshair")
+	TSubclassOf<UUserWidget> CrosshairUIFactory;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI|Crosshair")
+	TObjectPtr<UUserWidget> CrosshairUI;
 
 	TObjectPtr<UUserWidget> GetSniperUI();
 	void ShowSniperUI();
 	void HideSniperUI();
+
+	TObjectPtr<UUserWidget> GetCrosshairUI();
+	void ShowCrosshairUI();
+	void HideCrosshairUI();
 
 protected:
 	virtual void BeginPlay() override;
