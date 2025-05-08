@@ -140,9 +140,18 @@ void ATPSPlayer::SetGunType(EGunType InType)
 
 void ATPSPlayer::InputStartAim(const FInputActionValue& Value)
 {
+	if (curGunType != EGunType::Sniper)
+		return;
+
+	bIsAiming = true;
+	Cast<ATPSPlayerController>(GetController())->ShowSniperUI();
+	cameraComp->SetFieldOfView(45.0f);
 }
 
 void ATPSPlayer::InputStopAim(const FInputActionValue& Value)
 {
+	bIsAiming = false;
+	Cast<ATPSPlayerController>(GetController())->HideSniperUI();
+	cameraComp->SetFieldOfView(90.0f);
 }
 

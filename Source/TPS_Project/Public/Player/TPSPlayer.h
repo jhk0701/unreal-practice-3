@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input)
 	FVector Direction;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Aim)
+	bool bIsAiming;
+
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
@@ -75,5 +78,7 @@ protected:
 
 	UFUNCTION()
 	void InputStartAim(const FInputActionValue& Value);
+
+	UFUNCTION()
 	void InputStopAim(const FInputActionValue& Value);
 };

@@ -38,6 +38,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputAction> AimAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	TSubclassOf<class UUserWidget> SniperUIFactory;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI)
+	TObjectPtr<UUserWidget> SniperUI;
+
+	TObjectPtr<UUserWidget> GetSniperUI();
+	void ShowSniperUI();
+	void HideSniperUI();
+
 protected:
 	virtual void BeginPlay() override;
 	
