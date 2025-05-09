@@ -57,6 +57,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gun|Bullet|Effect")
 	TObjectPtr<class UParticleSystem> bulletEffectFactory;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gun|Bullet|Effect")
+	TObjectPtr<class USoundBase> bulletSound;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input)
 	FVector Direction;
 

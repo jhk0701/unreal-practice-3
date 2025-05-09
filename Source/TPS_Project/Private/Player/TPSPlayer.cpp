@@ -9,6 +9,7 @@
 #include <Camera/CameraComponent.h>
 #include <EnhancedInputComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include <Sound/SoundBase.h>
 
 ATPSPlayer::ATPSPlayer()
 {
@@ -69,6 +70,13 @@ ATPSPlayer::ATPSPlayer()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
+
+	ConstructorHelpers::FObjectFinder<USoundBase> loadedSound(TEXT("SoundWave'/Game/99-Assets/SniperGun/Rifle.Rifle'"));
+	if(loadedSound.Succeeded())
+	{
+		bulletSound = loadedSound.Object;
+	}
+	
 }
 
 // Called when the game starts or when spawned
@@ -151,6 +159,9 @@ void ATPSPlayer::InputFire(const FInputActionValue& Value)
 	// 공격 애니메이션 호출
 	UPlayerAnim* playerAnim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
 	playerAnim->PlayAttackAnim(); // 작성해둔 공격 애니메이션 몽타주 재생
+
+	// 총격 사운드 재생
+	UGameplayStatics::SpawnSound2D(GetWorld(), bulletSound);
 
 	if(curGunType == EGunType::Rifle)
 	{
