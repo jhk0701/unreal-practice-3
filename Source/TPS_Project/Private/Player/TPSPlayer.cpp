@@ -6,6 +6,7 @@
 #include <Camera/CameraComponent.h>
 #include <EnhancedInputComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include "Enemy/EnemyFSM.h"
 
 
 ATPSPlayer::ATPSPlayer()
@@ -155,6 +156,11 @@ void ATPSPlayer::InputFire(const FInputActionValue& Value)
 				FVector force = -hitInfo.ImpactNormal * hitComp->GetMass() * 500000;
 				hitComp->AddForce(force);
 			}
+
+			 if(UEnemyFSM* enemyFsm = Cast<UEnemyFSM>(hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("EnemyFSM"))))
+			 {
+				 enemyFsm->OnDamageProcess();
+			 }
 		}
 	}
 }

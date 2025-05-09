@@ -34,11 +34,24 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
 	TObjectPtr<class AEnemy> owner;
 
-	UPROPERTY(EditAnywhere, Category = FSM)
-	float attackRAnge = 150.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FSM)
+	float attackRange = 150.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FSM)
+	float attackDelayTime = 2.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = FSM)
+	int32 hp = 3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FSM)
+	float damageDelayTime = 2.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FSM)
+	float dieSpeed = 50.0f;
 
 public:	
 	UEnemyFSM();
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void IdleState();
 	void MoveState();
@@ -46,7 +59,7 @@ public:
 	void DamageState();
 	void DieState();
 
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void OnDamageProcess();
 
 protected:
 	virtual void BeginPlay() override;
