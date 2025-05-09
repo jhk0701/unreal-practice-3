@@ -55,6 +55,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input)
 	FVector Direction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float walkSpeed = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float runSpeed = 600.0f;
+
 public:
 	ATPSPlayer();
 
@@ -66,19 +72,18 @@ protected:
 
 	UFUNCTION()
 	void InputLook(const FInputActionValue& Value);
-
+	
 	UFUNCTION()
 	void InputStartMove(const FInputActionValue& Value);
-
 	UFUNCTION()
 	void InputStopMove(const FInputActionValue& Value);
-
+	
 	UFUNCTION()
 	void InputJump(const FInputActionValue& Value);
-
+	
 	UFUNCTION()
 	void InputFire(const FInputActionValue& Value);
-
+	
 	UFUNCTION()
 	void InputQuickSlot(const FInputActionValue& Value);
 
@@ -86,9 +91,12 @@ protected:
 
 	UFUNCTION()
 	void InputStartAim(const FInputActionValue& Value);
-
 	UFUNCTION()
 	void InputStopAim(const FInputActionValue& Value);
 
+	UFUNCTION()
+	void InputStartRun(const FInputActionValue& Value);
+	UFUNCTION()
+	void InputStopRun(const FInputActionValue& Value);
 
 };

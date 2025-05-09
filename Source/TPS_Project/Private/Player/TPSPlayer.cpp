@@ -2,12 +2,13 @@
 #include "TPSPlayerController.h"
 #include "Player/TPSPlayer.h"
 #include "Projectile/Bullet.h"
+#include "Enemy/EnemyFSM.h"
+#include "Player/PlayerAnim.h"
 #include <GameFramework/SpringArmComponent.h>
+#include <GameFramework/CharacterMovementComponent.h>
 #include <Camera/CameraComponent.h>
 #include <EnhancedInputComponent.h>
 #include <Kismet/GameplayStatics.h>
-#include "Enemy/EnemyFSM.h"
-
 
 ATPSPlayer::ATPSPlayer()
 {
@@ -66,6 +67,8 @@ void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+	
 	tpsController = Cast<ATPSPlayerController>(GetController());
 	tpsController->ShowCrosshairUI();
 
@@ -89,13 +92,21 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	ATPSPlayerController* PlayerController = Cast<ATPSPlayerController>(GetWorld()->GetFirstPlayerController());
 
 	EnhancedInputComp->BindAction(PlayerController->LookAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputLook);
+	
 	EnhancedInputComp->BindAction(PlayerController->MoveAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputStartMove);
 	EnhancedInputComp->BindAction(PlayerController->MoveAction, ETriggerEvent::Completed, this, &ATPSPlayer::InputStopMove);
+	
 	EnhancedInputComp->BindAction(PlayerController->JumpAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputJump);
+	
 	EnhancedInputComp->BindAction(PlayerController->FireAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputFire);
+	
 	EnhancedInputComp->BindAction(PlayerController->QuickSlotAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputQuickSlot);
+	
 	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Started, this, &ATPSPlayer::InputStartAim);
 	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Canceled, this, &ATPSPlayer::InputStopAim);
+
+	EnhancedInputComp->BindAction(PlayerController->RunAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputStartRun);
+	EnhancedInputComp->BindAction(PlayerController->RunAction, ETriggerEvent::Completed, this, &ATPSPlayer::InputStopRun);
 }
 
 void ATPSPlayer::InputLook(const FInputActionValue& Value)
@@ -125,6 +136,10 @@ void ATPSPlayer::InputJump(const FInputActionValue& Value)
 
 void ATPSPlayer::InputFire(const FInputActionValue& Value)
 {
+	// 공격 애니메이션 호출
+	UPlayerAnim* playerAnim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
+	playerAnim->PlayAttackAnim(); // 작성해둔 공격 애니메이션 몽타주 재생
+
 	if(curGunType == EGunType::Rifle)
 	{
 		FTransform firePoint = gunMeshComp->GetSocketTransform(TEXT("FirePoint"));
@@ -200,5 +215,15 @@ void ATPSPlayer::InputStopAim(const FInputActionValue& Value)
 	tpsController->ShowCrosshairUI();
 
 	cameraComp->SetFieldOfView(90.0f);
+}
+
+void ATPSPlayer::InputStartRun(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = runSpeed;
+}
+
+void ATPSPlayer::InputStopRun(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 }
 

@@ -38,6 +38,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	TObjectPtr<UInputAction> AimAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	TObjectPtr<UInputAction> RunAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI|Sniper")
 	TSubclassOf<class UUserWidget> SniperUIFactory;
 
