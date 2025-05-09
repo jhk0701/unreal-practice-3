@@ -145,6 +145,9 @@ void ATPSPlayer::InputJump(const FInputActionValue& Value)
 
 void ATPSPlayer::InputFire(const FInputActionValue& Value)
 {
+	// 카메라 진동 연출
+	tpsController->PlayerCameraManager->StartCameraShake(cameraShake);
+
 	// 공격 애니메이션 호출
 	UPlayerAnim* playerAnim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
 	playerAnim->PlayAttackAnim(); // 작성해둔 공격 애니메이션 몽타주 재생

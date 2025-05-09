@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class UCameraComponent> cameraComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadwrite, Category = "Camera|Shake")
+	TSubclassOf<class UCameraShakeBase> cameraShake;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Type")
 	EGunType curGunType{ EGunType::None };
 
