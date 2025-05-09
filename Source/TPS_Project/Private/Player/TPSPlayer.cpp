@@ -2,10 +2,10 @@
 #include "TPSPlayerController.h"
 #include "Player/TPSPlayer.h"
 #include "Projectile/Bullet.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
-#include "EnhancedInputComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include <GameFramework/SpringArmComponent.h>
+#include <Camera/CameraComponent.h>
+#include <EnhancedInputComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 
 ATPSPlayer::ATPSPlayer()

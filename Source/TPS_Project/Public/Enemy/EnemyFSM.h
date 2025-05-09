@@ -24,6 +24,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
 	EEnemyState mState = EEnemyState::Idle;
 
+	UPROPERTY(EditDefaultsOnly, Category = FSM)
+	float idleDelayTime = 2;
+	float elapsedTime = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
+	TObjectPtr<class ATPSPlayer> target;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
+	TObjectPtr<class AEnemy> owner;
+
+	UPROPERTY(EditAnywhere, Category = FSM)
+	float attackRAnge = 150.0f;
+
 public:	
 	UEnemyFSM();
 
