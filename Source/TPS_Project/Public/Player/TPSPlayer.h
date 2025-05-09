@@ -41,6 +41,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Mesh")
 	TObjectPtr<UStaticMeshComponent> snipeMeshComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Socket")
+	FName handSocketName = FName("hand_rSocket");
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun|Aim")
 	bool bIsAiming;

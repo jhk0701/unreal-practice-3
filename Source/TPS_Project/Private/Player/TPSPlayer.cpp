@@ -26,22 +26,31 @@ ATPSPlayer::ATPSPlayer()
 	}
 
 	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMesh"));
-	gunMeshComp->SetupAttachment(GetMesh());
+	gunMeshComp->SetupAttachment(GetMesh(), handSocketName); // 손 소켓에 붙이기
+	gunMeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> loadedGunMesh(TEXT("SkeletalMesh'/Game/99-Assets/FPWeapon/Mesh/SK_FPGun.SK_FPGun'"));
 	if(loadedGunMesh.Succeeded())
 	{
 		gunMeshComp->SetSkeletalMesh(loadedGunMesh.Object);
-		gunMeshComp->SetRelativeLocation(FVector(-14, 52, 120));
+		gunMeshComp->SetRelativeLocationAndRotation(FVector(-17,10,-3), FRotator(0,90,0));
 	}
 	
 	snipeMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SnipeMesh"));
-	snipeMeshComp->SetupAttachment(GetMesh());
+	snipeMeshComp->SetupAttachment(GetMesh(), handSocketName);
+	snipeMeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
 	ConstructorHelpers::FObjectFinder<UStaticMesh> loadedSnipeMesh(TEXT("StaticMesh'/Game/99-Assets/SniperGun/sniper11.sniper11'"));
 	if(loadedSnipeMesh.Succeeded())
 	{
 		snipeMeshComp->SetStaticMesh(loadedSnipeMesh.Object);
-		snipeMeshComp->SetRelativeLocation(FVector(-22, 55, 150));
-		snipeMeshComp->SetRelativeScale3D(FVector(0.15f));
+
+		FTransform localTransform;
+		localTransform.SetLocation(FVector(-42, 7, 1));
+		localTransform.SetRotation(FRotator(0, 90, 0).Quaternion());
+		localTransform.SetScale3D(FVector(0.15f));
+
+		snipeMeshComp->SetRelativeTransform(localTransform);
 	}
 
 	// 3인칭 카메라
