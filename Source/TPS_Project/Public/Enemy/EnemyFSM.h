@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = FSM)
 	float dieSpeed = 50.0f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
+	TObjectPtr<class UEnemyAnim> anim;
+
 public:	
 	UEnemyFSM();
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

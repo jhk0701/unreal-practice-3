@@ -1,5 +1,6 @@
 #include "Enemy/EnemyFSM.h"
 #include "Enemy/Enemy.h"
+#include "Enemy/EnemyAnim.h"
 #include "Player/TPSPlayer.h"
 #include <Kismet/GameplayStatics.h>
 #include "TPS_Project.h"
@@ -18,6 +19,8 @@ void UEnemyFSM::BeginPlay()
 	auto actor = UGameplayStatics::GetActorOfClass(GetWorld(), ATPSPlayer::StaticClass());
 	target = Cast<ATPSPlayer>(actor);
 	owner = Cast<AEnemy>(GetOwner());
+
+	anim = Cast<UEnemyAnim>(owner->GetMesh()->GetAnimInstance());
 }
 
 void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -50,6 +53,8 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		IdleState();
 		break;
 	}
+
+	anim->animState = mState;
 }
 
 
@@ -87,6 +92,7 @@ void UEnemyFSM::AttackState()
 
 		// 공격
 		PRINT_LOG(TEXT("Enemy Attack"));
+		anim->bAttackPlay = true;
 	}
 
 	float distance = FVector::DistSquared(target->GetActorLocation(), owner->GetActorLocation());
@@ -112,6 +118,9 @@ void UEnemyFSM::DamageState()
 
 void UEnemyFSM::DieState()
 {
+	if (!anim->bDieDone)
+		return;
+
 	FVector downLocation = owner->GetActorLocation() + dieSpeed * GetWorld()->DeltaTimeSeconds * FVector::DownVector;
 	owner->SetActorLocation(downLocation);
 
@@ -130,10 +139,14 @@ void UEnemyFSM::OnDamageProcess()
 	{
 		elapsedTime = 0;
 		mState = EEnemyState::Damage;
+
+		int32 r = FMath::RandRange(0, 1);
+		anim->PlayDamageAnim(FName(FString::Printf(TEXT("Damage%d"), r)));
 	}
 	else
 	{
 		owner->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		mState = EEnemyState::Die;
+		anim->PlayDamageAnim(TEXT("Die"));
 	}
 }

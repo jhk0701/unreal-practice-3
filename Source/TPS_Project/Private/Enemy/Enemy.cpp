@@ -6,7 +6,7 @@
 // Sets default values
 AEnemy::AEnemy()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	USkeletalMeshComponent* mesh = GetMesh();
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> loadedBodyMesh(TEXT("SkeletalMesh'/Game/99-Assets/Enemy/Model/vampire_a_lusth.vampire_a_lusth'"));
@@ -32,14 +32,3 @@ AEnemy::AEnemy()
 	collider->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 }
 
-void AEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
-void AEnemy::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
