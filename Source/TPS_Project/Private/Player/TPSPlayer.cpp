@@ -46,10 +46,12 @@ ATPSPlayer::ATPSPlayer()
 	{
 		snipeMeshComp->SetStaticMesh(loadedSnipeMesh.Object);
 
-		FTransform localTransform;
+		/*
 		localTransform.SetLocation(FVector(-42, 7, 1));
 		localTransform.SetRotation(FRotator(0, 90, 0).Quaternion());
 		localTransform.SetScale3D(FVector(0.15f));
+		*/
+		FTransform localTransform = FTransform(FRotator(0, 90, 0).Quaternion(), FVector(-42, 7, 1), FVector(0.15f));
 
 		snipeMeshComp->SetRelativeTransform(localTransform);
 	}

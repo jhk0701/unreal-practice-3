@@ -7,12 +7,20 @@
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> loadedBodyMesh(TEXT("SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
+	
+	USkeletalMeshComponent* mesh = GetMesh();
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> loadedBodyMesh(TEXT("SkeletalMesh'/Game/99-Assets/Enemy/Model/vampire_a_lusth.vampire_a_lusth'"));
 	if (loadedBodyMesh.Succeeded())
 	{
-		GetMesh()->SetSkeletalMesh(loadedBodyMesh.Object);
-		GetMesh()->SetRelativeLocationAndRotation(FVector(0,0,-88), FRotator(0,-90,0));
+		mesh->SetSkeletalMesh(loadedBodyMesh.Object);
+		mesh->SetRelativeLocationAndRotation(FVector(0,0,-88), FRotator(0,-90,0));
+		mesh->SetRelativeScale3D(FVector(0.84f));
+	}
+
+	ConstructorHelpers::FClassFinder<UAnimInstance> loadedAnimInst(TEXT("AnimBlueprint'/Game/2-Blueprints/Enemy/ABP_Enemy.ABP_Enemy_C'"));
+	if(loadedAnimInst.Succeeded())
+	{
+		mesh->SetAnimInstanceClass(loadedAnimInst.Class);
 	}
 
 	fsm = CreateDefaultSubobject<UEnemyFSM>(TEXT("EnemyFSM"));
