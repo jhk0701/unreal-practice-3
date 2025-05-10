@@ -52,6 +52,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
 	TObjectPtr<class UEnemyAnim> anim;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
+	TObjectPtr<class AAIController> ai;
+
 public:	
 	UEnemyFSM();
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

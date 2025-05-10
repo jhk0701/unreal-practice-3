@@ -5,6 +5,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "TPS_Project.h"
 #include <Components/CapsuleComponent.h>
+#include <AIController.h>
 
 
 UEnemyFSM::UEnemyFSM()
@@ -21,6 +22,9 @@ void UEnemyFSM::BeginPlay()
 	owner = Cast<AEnemy>(GetOwner());
 
 	anim = Cast<UEnemyAnim>(owner->GetMesh()->GetAnimInstance());
+
+	// AAIController 할당하기
+	ai = Cast<AAIController>(owner->GetController());
 }
 
 void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -73,7 +77,8 @@ void UEnemyFSM::MoveState()
 {
 	FVector destination = target->GetActorLocation();
 	FVector dir = destination - owner->GetActorLocation();
-	owner->AddMovementInput(dir.GetSafeNormal());
+	// owner->AddMovementInput(dir.GetSafeNormal());
+	ai->MoveToLocation(destination); // 목표 지점으로 이동하라
 
 	// dir.Size() < attackRange; // 벡터의 길이로 계산하기
 	if (dir.SizeSquared() < attackRange * attackRange) // 계산 최적화
