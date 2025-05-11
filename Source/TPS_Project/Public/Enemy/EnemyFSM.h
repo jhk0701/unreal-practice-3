@@ -55,6 +55,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
 	TObjectPtr<class AAIController> ai;
 
+	FVector randomPos;
+
 public:	
 	UEnemyFSM();
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -66,6 +68,8 @@ public:
 	void DieState();
 
 	void OnDamageProcess();
+
+	bool GetRandomPositionInNavMesh(FVector centerLocation, float radius, FVector& dest);
 
 protected:
 	virtual void BeginPlay() override;

@@ -6,6 +6,8 @@
 #include "TPS_Project.h"
 #include <Components/CapsuleComponent.h>
 #include <AIController.h>
+#include <NavigationSystem.h>
+#include <Navigation/PathFollowingComponent.h>
 
 
 UEnemyFSM::UEnemyFSM()
@@ -70,6 +72,9 @@ void UEnemyFSM::IdleState()
 	{
 		mState = EEnemyState::Move;
 		elapsedTime = 0;
+
+		// 최초 랜덤한 위치 정하기
+		GetRandomPositionInNavMesh(owner->GetActorLocation(), 500, randomPos);
 	}
 }
 
@@ -78,12 +83,47 @@ void UEnemyFSM::MoveState()
 	FVector destination = target->GetActorLocation();
 	FVector dir = destination - owner->GetActorLocation();
 	// owner->AddMovementInput(dir.GetSafeNormal());
-	ai->MoveToLocation(destination); // 목표 지점으로 이동하라
+	
+	// ai->MoveToLocation(destination); // 목표 지점으로 이동하라 (이전버전 : 단순 이동)
+
+	// 내비게이션 시스템 활용
+	// 먼저 길을 찾아보도록 시도
+	auto ns = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+
+	FPathFindingQuery query;
+	FAIMoveRequest req;
+
+	// 목적지에서 인지할 수 있는 범위
+	req.SetAcceptanceRadius(3);
+	req.SetGoalLocation(destination);
+
+	// 길 찾기를 위한 쿼리작성
+	ai->BuildPathfindingQuery(req, query);
+
+	// 길 찾기 결과 가져오기
+	FPathFindingResult r = ns->FindPathSync(query);
+
+	if(r.Result == ENavigationQueryResult::Success)
+	{
+		ai->MoveToLocation(destination);
+	}
+	else 
+	{
+		// 길을 찾지 못하면 랜덤 위치를 패트롤
+		auto result = ai->MoveToLocation(randomPos);
+
+		if(result == EPathFollowingRequestResult::AlreadyAtGoal)
+		{
+			// 도착 시 새로운 랜덤 위치 구하기
+			GetRandomPositionInNavMesh(owner->GetActorLocation(), 500, randomPos);
+		}
+	}
 
 	// dir.Size() < attackRange; // 벡터의 길이로 계산하기
 	if (dir.SizeSquared() < attackRange * attackRange) // 계산 최적화
 	{
 		mState = EEnemyState::Attack;
+		ai->StopMovement();
 	}
 }
 
@@ -139,6 +179,7 @@ void UEnemyFSM::OnDamageProcess()
 		return;
 	
 	--hp;
+	ai->StopMovement();
 
 	if (hp > 0)
 	{
@@ -154,4 +195,16 @@ void UEnemyFSM::OnDamageProcess()
 		mState = EEnemyState::Die;
 		anim->PlayDamageAnim(TEXT("Die"));
 	}
+}
+
+
+bool UEnemyFSM::GetRandomPositionInNavMesh(FVector centerLocation, float radius, FVector& dest)
+{
+	auto ns = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+	FNavLocation loc;
+	bool result = ns->GetRandomReachablePointInRadius(centerLocation, radius, loc);
+
+	dest = loc.Location;
+
+	return result;;
 }

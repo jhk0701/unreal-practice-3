@@ -30,5 +30,7 @@ AEnemy::AEnemy()
 	UCapsuleComponent* collider = GetCapsuleComponent();
 	collider->SetCollisionProfileName(UCollisionProfile::CustomCollisionProfileName);
 	collider->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
