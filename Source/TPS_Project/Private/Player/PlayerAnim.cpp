@@ -27,4 +27,6 @@ void UPlayerAnim::PlayAttackAnim()
 {
 	// 공격 애니메이션 몽타주 재생
 	Montage_Play(attackAnimMontage);
+	
+	
 }

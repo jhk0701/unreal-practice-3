@@ -1,15 +1,12 @@
 #include "TPS_Project.h"
 #include "TPSPlayerController.h"
 #include "Player/TPSPlayer.h"
-#include "Projectile/Bullet.h"
-#include "Enemy/EnemyFSM.h"
 #include "Player/PlayerAnim.h"
-#include <GameFramework/SpringArmComponent.h>
-#include <GameFramework/CharacterMovementComponent.h>
+#include "Player/PlayerMove.h"
+#include "Player/PlayerFire.h"
 #include <Camera/CameraComponent.h>
+#include <GameFramework/SpringArmComponent.h>
 #include <EnhancedInputComponent.h>
-#include <Kismet/GameplayStatics.h>
-#include <Sound/SoundBase.h>
 
 ATPSPlayer::ATPSPlayer()
 {
@@ -31,26 +28,20 @@ ATPSPlayer::ATPSPlayer()
 	gunMeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> loadedGunMesh(TEXT("SkeletalMesh'/Game/99-Assets/FPWeapon/Mesh/SK_FPGun.SK_FPGun'"));
-	if(loadedGunMesh.Succeeded())
+	if (loadedGunMesh.Succeeded())
 	{
 		gunMeshComp->SetSkeletalMesh(loadedGunMesh.Object);
-		gunMeshComp->SetRelativeLocationAndRotation(FVector(-17,10,-3), FRotator(0,90,0));
+		gunMeshComp->SetRelativeLocationAndRotation(FVector(-17, 10, -3), FRotator(0, 90, 0));
 	}
-	
+
 	snipeMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SnipeMesh"));
 	snipeMeshComp->SetupAttachment(GetMesh(), handSocketName);
 	snipeMeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> loadedSnipeMesh(TEXT("StaticMesh'/Game/99-Assets/SniperGun/sniper11.sniper11'"));
-	if(loadedSnipeMesh.Succeeded())
+	if (loadedSnipeMesh.Succeeded())
 	{
 		snipeMeshComp->SetStaticMesh(loadedSnipeMesh.Object);
-
-		/*
-		localTransform.SetLocation(FVector(-42, 7, 1));
-		localTransform.SetRotation(FRotator(0, 90, 0).Quaternion());
-		localTransform.SetScale3D(FVector(0.15f));
-		*/
 		FTransform localTransform = FTransform(FRotator(0, 90, 0).Quaternion(), FVector(-42, 7, 1), FVector(0.15f));
 
 		snipeMeshComp->SetRelativeTransform(localTransform);
@@ -73,182 +64,21 @@ ATPSPlayer::ATPSPlayer()
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
-	ConstructorHelpers::FObjectFinder<USoundBase> loadedSound(TEXT("SoundWave'/Game/99-Assets/SniperGun/Rifle.Rifle'"));
-	if(loadedSound.Succeeded())
-	{
-		bulletSound = loadedSound.Object;
-	}
 	
-}
+	// 이동 컴포넌트 생성
+	playerMove = CreateDefaultSubobject<UPlayerMove>(TEXT("PlayerMove"));
 
-// Called when the game starts or when spawned
-void ATPSPlayer::BeginPlay()
-{
-	Super::BeginPlay();
-
-	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
-	
-	tpsController = Cast<ATPSPlayerController>(GetController());
-	tpsController->ShowCrosshairUI();
-
-	SetGunType(EGunType::Rifle);
-}
-
-// Called every frame
-void ATPSPlayer::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	AddMovementInput(Direction);
+	// 공격 컴포넌트 생성
+	playerFire = CreateDefaultSubobject<UPlayerFire>(TEXT("PlayerFire"));
 }
 
 // Called to bind functionality to input
 void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	
 	ATPSPlayerController* PlayerController = Cast<ATPSPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	EnhancedInputComp->BindAction(PlayerController->LookAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputLook);
-	
-	EnhancedInputComp->BindAction(PlayerController->MoveAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputStartMove);
-	EnhancedInputComp->BindAction(PlayerController->MoveAction, ETriggerEvent::Completed, this, &ATPSPlayer::InputStopMove);
-	
-	EnhancedInputComp->BindAction(PlayerController->JumpAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputJump);
-	
-	EnhancedInputComp->BindAction(PlayerController->FireAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputFire);
-	
-	EnhancedInputComp->BindAction(PlayerController->QuickSlotAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputQuickSlot);
-	
-	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Started, this, &ATPSPlayer::InputStartAim);
-	EnhancedInputComp->BindAction(PlayerController->AimAction, ETriggerEvent::Canceled, this, &ATPSPlayer::InputStopAim);
-
-	EnhancedInputComp->BindAction(PlayerController->RunAction, ETriggerEvent::Triggered, this, &ATPSPlayer::InputStartRun);
-	EnhancedInputComp->BindAction(PlayerController->RunAction, ETriggerEvent::Completed, this, &ATPSPlayer::InputStopRun);
+	playerMove->SetupInputBinding(PlayerInputComponent, PlayerController);
+	playerFire->SetupInputBinding(PlayerInputComponent, PlayerController);
 }
-
-void ATPSPlayer::InputLook(const FInputActionValue& Value)
-{
-	FVector Input = Value.Get<FVector>();
-
-	AddControllerPitchInput(Input.Y);
-	AddControllerYawInput(Input.X);
-}
-
-
-void ATPSPlayer::InputStartMove(const FInputActionValue& Value)
-{
-	FVector Input = Value.Get<FVector>();
-	Direction = GetActorForwardVector() * Input.X + GetActorRightVector() * Input.Y;
-}
-
-void ATPSPlayer::InputStopMove(const FInputActionValue& Value)
-{
-	Direction = FVector::ZeroVector;
-}
-
-void ATPSPlayer::InputJump(const FInputActionValue& Value)
-{
-	Jump();
-}
-
-void ATPSPlayer::InputFire(const FInputActionValue& Value)
-{
-	// 카메라 진동 연출
-	tpsController->PlayerCameraManager->StartCameraShake(cameraShake);
-
-	// 공격 애니메이션 호출
-	UPlayerAnim* playerAnim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
-	playerAnim->PlayAttackAnim(); // 작성해둔 공격 애니메이션 몽타주 재생
-
-	// 총격 사운드 재생
-	UGameplayStatics::SpawnSound2D(GetWorld(), bulletSound);
-
-	if(curGunType == EGunType::Rifle)
-	{
-		FTransform firePoint = gunMeshComp->GetSocketTransform(TEXT("FirePoint"));
-		GetWorld()->SpawnActor<ABullet>(bulletFactory, firePoint);
-	}
-	else
-	{
-		FVector start = cameraComp->GetComponentLocation();
-		FVector end = start + cameraComp->GetForwardVector() * 5000;
-		FHitResult hitInfo;
-		FCollisionQueryParams params;
-		params.AddIgnoredActor(this);
-
-		UWorld* world = GetWorld();
-
-		bool bHit = world->LineTraceSingleByChannel(hitInfo, start, end, ECC_Visibility, params);
-		if(bHit)
-		{
-			FTransform hitPoint;
-			hitPoint.SetLocation(hitInfo.ImpactPoint);	// 충돌 지점
-			hitPoint.SetRotation(hitInfo.ImpactNormal.ToOrientationQuat()); // 충돌면
-
-			// 총알 효과
-			UGameplayStatics::SpawnEmitterAtLocation(world, bulletEffectFactory, hitPoint);
-
-			UPrimitiveComponent* hitComp = hitInfo.GetComponent(); // 충돌한 컴포넌트
-			if (hitComp && hitComp->IsSimulatingPhysics())
-			{
-				FVector force = -hitInfo.ImpactNormal * hitComp->GetMass() * 500000;
-				hitComp->AddForce(force);
-			}
-
-			 if(UEnemyFSM* enemyFsm = Cast<UEnemyFSM>(hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("EnemyFSM"))))
-			 {
-				 enemyFsm->OnDamageProcess();
-			 }
-		}
-	}
-}
-
-void ATPSPlayer::InputQuickSlot(const FInputActionValue& Value)
-{
-	float input = Value.Get<float>();
-	SetGunType((EGunType)input);
-}
-
-void ATPSPlayer::SetGunType(EGunType InType)
-{
-	curGunType = InType;
-	gunMeshComp->SetVisibility(curGunType == EGunType::Rifle);
-	snipeMeshComp->SetVisibility(curGunType == EGunType::Sniper);
-}
-
-
-void ATPSPlayer::InputStartAim(const FInputActionValue& Value)
-{
-	if (curGunType != EGunType::Sniper)
-		return;
-
-	bIsAiming = true;
-
-	tpsController->ShowSniperUI();
-	tpsController->HideCrosshairUI();
-
-	cameraComp->SetFieldOfView(45.0f);
-}
-
-void ATPSPlayer::InputStopAim(const FInputActionValue& Value)
-{
-	bIsAiming = false;
-
-	tpsController->HideSniperUI();
-	tpsController->ShowCrosshairUI();
-
-	cameraComp->SetFieldOfView(90.0f);
-}
-
-void ATPSPlayer::InputStartRun(const FInputActionValue& Value)
-{
-	GetCharacterMovement()->MaxWalkSpeed = runSpeed;
-}
-
-void ATPSPlayer::InputStopRun(const FInputActionValue& Value)
-{
-	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
-}
-
