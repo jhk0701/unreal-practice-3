@@ -5,6 +5,8 @@
 #include "GameFramework/Character.h"
 #include "TPSPlayer.generated.h"
 
+class UInputComponent;
+class ATPSPlayerController;
 struct FInputActionValue;
 
 UENUM(BlueprintType)
@@ -15,6 +17,7 @@ enum class EGunType : uint8
 	Sniper	UMETA(DisplayName = "Sniper Type"),
 };
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnInputBinding, UInputComponent*, ATPSPlayerController*);
 
 UCLASS()
 class TPS_PROJECT_API ATPSPlayer : public ACharacter
@@ -22,6 +25,8 @@ class TPS_PROJECT_API ATPSPlayer : public ACharacter
 	GENERATED_BODY()
 
 public:
+	FOnInputBinding OnInputBinding;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	TObjectPtr<class USpringArmComponent> springArmComp;
 
@@ -51,6 +56,6 @@ public:
 
 public:
 	ATPSPlayer();
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 };

@@ -79,6 +79,7 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	
 	ATPSPlayerController* PlayerController = Cast<ATPSPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	playerMove->SetupInputBinding(PlayerInputComponent, PlayerController);
-	playerFire->SetupInputBinding(PlayerInputComponent, PlayerController);
+	OnInputBinding.Broadcast(PlayerInputComponent, PlayerController);
+	// playerMove->SetupInputBinding(PlayerInputComponent, PlayerController);
+	// playerFire->SetupInputBinding(PlayerInputComponent, PlayerController);
 }

@@ -1,15 +1,15 @@
 #include "Player/PlayerBaseComponent.h"
 
-UPlayerBaseComponent::UPlayerBaseComponent()
+void UPlayerBaseComponent::InitializeComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
-}
+	me = Cast<ATPSPlayer>(GetOwner());
+	moveComp = me->GetCharacterMovement();
 
+	me->OnInputBinding.AddUObject(this, &UPlayerBaseComponent::SetupInputBinding);
+}
 
 void UPlayerBaseComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	me = Cast<ATPSPlayer>(GetOwner());
-	moveComp = me->GetCharacterMovement();
 }

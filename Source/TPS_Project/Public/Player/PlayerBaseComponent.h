@@ -20,7 +20,16 @@ public:
 	TObjectPtr<UCharacterMovementComponent> moveComp;
 
 public:	
-	UPlayerBaseComponent();
+	UPlayerBaseComponent()
+	{
+		PrimaryComponentTick.bCanEverTick = false;
+
+		bWantsInitializeComponent = true; // initializeComponent 함수 사용을 위한 설정
+	};
+
+	// begin 보다 먼저 호출하도록하기 위해서 initializeComponent 함수 오버라이드
+	virtual void InitializeComponent() override;
+
 	virtual void BeginPlay() override;
 	virtual void SetupInputBinding(class UInputComponent* PlayerInputComponent, class ATPSPlayerController* PlayerController) {};
 };
