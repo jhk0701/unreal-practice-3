@@ -53,6 +53,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI|Crosshair")
 	TObjectPtr<UUserWidget> CrosshairUI;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI|GameOver")
+	TSubclassOf<UUserWidget> GameOverUIFactory;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI|GameOver")
+	TObjectPtr<UUserWidget> GameOverUI;
+
 public:
 	TObjectPtr<UUserWidget> GetSniperUI();
 	void ShowSniperUI();
@@ -61,6 +67,10 @@ public:
 	TObjectPtr<UUserWidget> GetCrosshairUI();
 	void ShowCrosshairUI();
 	void HideCrosshairUI();
+
+	TObjectPtr<UUserWidget> GetGameOverUI();
+	void ShowGameOverUI();
+	void HideGameOverUI();
 
 protected:
 	virtual void BeginPlay() override;

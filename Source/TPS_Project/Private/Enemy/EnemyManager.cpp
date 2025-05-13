@@ -9,8 +9,7 @@ AEnemyManager::AEnemyManager()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	// /Script/Engine.Blueprint'/Game/2-Blueprints/Enemy/BP_TPSEnemy.BP_TPSEnemy_C'
-	ConstructorHelpers::FClassFinder<AEnemy> tempEnemy(TEXT("Blueprint'/Game/2-Blueprints/Enemy/BP_TPSEnemy.BP_TPSEnemy_C'"));
+	ConstructorHelpers::FClassFinder<AEnemy> tempEnemy(TEXT("Blueprint'/Game/2-Blueprints/Enemy/BP_Enemy.BP_Enemy_C'"));
 	if(tempEnemy.Succeeded())
 	{
 		enemyFactory = tempEnemy.Class;

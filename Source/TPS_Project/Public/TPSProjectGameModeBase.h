@@ -15,4 +15,9 @@ class TPS_PROJECT_API ATPSProjectGameModeBase : public AGameModeBase
 public:
 	ATPSProjectGameModeBase();
 
+	void GameOver();
+
+	UFUNCTION()
+	void QuitGame();
+
 };

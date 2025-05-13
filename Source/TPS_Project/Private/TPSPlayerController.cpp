@@ -2,6 +2,8 @@
 #include "TPSPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
+#include "TPSProjectGameModeBase.h"
 
 void ATPSPlayerController::BeginPlay()
 {
@@ -49,4 +51,27 @@ void ATPSPlayerController::ShowCrosshairUI()
 void ATPSPlayerController::HideCrosshairUI()
 {
 	GetCrosshairUI()->RemoveFromParent();
+}
+
+TObjectPtr<UUserWidget> ATPSPlayerController::GetGameOverUI()
+{
+	if (!GameOverUI)
+	{
+		GameOverUI = CreateWidget(this, GameOverUIFactory);
+		UButton* btn = Cast<UButton>(GameOverUI->GetWidgetFromName(TEXT("BtnExit")));
+
+		btn->OnClicked.AddDynamic(Cast<ATPSProjectGameModeBase>(GetWorld()->GetAuthGameMode()), &ATPSProjectGameModeBase::QuitGame);
+	}
+
+	return GameOverUI;
+}
+
+void ATPSPlayerController::ShowGameOverUI()
+{
+	GetGameOverUI()->AddToViewport();
+}
+
+void ATPSPlayerController::HideGameOverUI()
+{
+	GetGameOverUI()->RemoveFromParent();
 }

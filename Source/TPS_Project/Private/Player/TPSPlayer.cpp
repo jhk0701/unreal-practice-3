@@ -84,7 +84,7 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
-	ATPSPlayerController* PlayerController = Cast<ATPSPlayerController>(GetWorld()->GetFirstPlayerController());
+	ATPSPlayerController* PlayerController = Cast<ATPSPlayerController>(GetController());
 
 	OnInputBinding.Broadcast(PlayerInputComponent, PlayerController);
 }
@@ -108,4 +108,8 @@ void ATPSPlayer::OnHitEvent()
 void ATPSPlayer::OnGameOver()
 {
 	PRINT_LOG(TEXT("Game Over"));
+	if (ATPSPlayerController* controller = Cast<ATPSPlayerController>(GetController()))
+	{
+		controller->ShowGameOverUI();
+	}
 }
