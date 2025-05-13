@@ -26,7 +26,16 @@ void UEnemyFSM::BeginPlay()
 	anim = Cast<UEnemyAnim>(owner->GetMesh()->GetAnimInstance());
 
 	// AAIController 할당하기
-	ai = Cast<AAIController>(owner->GetController());
+	
+	if (AController* controller = owner->GetController())
+	{
+		ai = Cast<AAIController>(owner->GetController());
+	}
+	else
+	{
+		PRINT_LOG(TEXT("Controller is null"));
+		owner->Destroy();
+	}
 }
 
 void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -136,7 +145,7 @@ void UEnemyFSM::AttackState()
 		elapsedTime = 0;
 
 		// 공격
-		PRINT_LOG(TEXT("Enemy Attack"));
+		// PRINT_LOG(TEXT("Enemy Attack"));
 		anim->bAttackPlay = true;
 	}
 

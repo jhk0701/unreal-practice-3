@@ -54,8 +54,22 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Component)
 	TObjectPtr<class UPlayerFire> playerFire;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
+	int MaxHP = 10;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Health)
+	int HP;
+
 public:
 	ATPSPlayer();
+	
+	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable, Category = Health)
+	void OnHitEvent();
+
+	UFUNCTION(BlueprintCallable, Category = Health)
+	void OnGameOver();
 
 };

@@ -72,6 +72,13 @@ ATPSPlayer::ATPSPlayer()
 	playerFire = CreateDefaultSubobject<UPlayerFire>(TEXT("PlayerFire"));
 }
 
+void ATPSPlayer::BeginPlay()
+{
+	Super::BeginPlay();
+
+	HP = MaxHP;
+}
+
 // Called to bind functionality to input
 void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -80,6 +87,25 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	ATPSPlayerController* PlayerController = Cast<ATPSPlayerController>(GetWorld()->GetFirstPlayerController());
 
 	OnInputBinding.Broadcast(PlayerInputComponent, PlayerController);
-	// playerMove->SetupInputBinding(PlayerInputComponent, PlayerController);
-	// playerFire->SetupInputBinding(PlayerInputComponent, PlayerController);
+}
+
+void ATPSPlayer::OnHitEvent()
+{
+	if (HP <= 0)
+		return;
+
+	--HP;
+
+	PRINT_LOG(TEXT("Player Hit!! HP : %d"), HP);
+
+	if (HP <= 0)
+	{
+		PRINT_LOG(TEXT("Player Die."));
+		OnGameOver();
+	}
+}
+
+void ATPSPlayer::OnGameOver()
+{
+	PRINT_LOG(TEXT("Game Over"));
 }
